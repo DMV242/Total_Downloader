@@ -6,7 +6,9 @@ import tempfile
 app = Flask(__name__)
 
 
-COOKIES_FILE = "/etc/secrets/cookies.txt"
+COOKIES_FILE = os.path.join(
+    os.path.dirname(__file__), "cookies", "secrets", "cookies.txt"
+)
 
 
 def afficher_options(formats):
