@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Accueil - Total Downloader</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+
+<body>
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <h1 class="logo">Total Downloader</h1>
+                <nav class="nav">
+                    <ul>
+                        <li><a href="#features">Fonctionnalités</a></li>
+                        <li><a href="#about">À propos</a></li>
+                        <li><a href="#contact">Contact</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </header>
+    <section class="hero">
+        <div class="container">
+            <h1>Bienvenue sur Total Downloader</h1>
+            <p>Notre service vous permet de télécharger facilement des vidéos depuis Instagram et YouTube.</p>
+            <p>Choisissez la plateforme, entrez l'URL de la vidéo, et téléchargez le contenu en quelques clics.</p>
+            <a href="{{ url_for('index') }}" class="button">Accéder à l'application</a>
+        </div>
+    </section>
+    <section id="features" class="features">
+        <div class="container">
+            <h2>Fonctionnalités</h2>
+            <div class="features-grid">
+                <div class="feature-item">
+                    <h3>Facile à utiliser</h3>
+                    <p>Interface simple et intuitive pour télécharger des vidéos rapidement.</p>
+                </div>
+                <div class="feature-item">
+                    <h3>Support multi-plateforme</h3>
+                    <p>Téléchargez des vidéos depuis Instagram et YouTube.</p>
+                </div>
+                <div class="feature-item">
+                    <h3>Gratuit</h3>
+                    <p>Notre service est entièrement gratuit.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section id="about" class="about">
+        <div class="container">
+            <h2>À propos</h2>
+            <p>Total Downloader est un outil en ligne qui vous permet de télécharger des vidéos depuis les plateformes
+                les plus populaires. Nous nous engageons à fournir un service rapide et fiable.</p>
+        </div>
+    </section>
+    <section id="contact" class="contact">
+        <div class="container">
+            <h2>Contact</h2>
+            <p>Pour toute question, veuillez nous contacter à <a
+                    href="mailto:support@totaldownloader.com">support@totaldownloader.com</a>.</p>
+        </div>
+    </section>
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; <span id="current-year"></span> Total Downloader. Tous droits réservés.</p>
+        </div>
+    </footer>
+    <script>
+        document.getElementById('current-year').textContent = new Date().getFullYear();
+    </script>
+</body>
+
+</html>

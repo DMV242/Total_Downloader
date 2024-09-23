@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Total Downloader</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+
+<body>
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <h1 class="logo">Total Downloader</h1>
+                <nav class="nav">
+                    <ul>
+                        <li><a href="/">Accueil</a></li>
+                        <li><a href="#features">Fonctionnalités</a></li>
+                        <li><a href="#about">À propos</a></li>
+                        <li><a href="#contact">Contact</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </header>
+    <div class="container">
+        <h1>Total Downloader</h1>
+        <form id="download-form">
+            <label for="platform">Choisissez la plateforme :</label>
+            <select id="platform" name="platform" required>
+                <option value="instagram">Instagram</option>
+                <option value="youtube">YouTube</option>
+            </select>
+            <label for="url">Entrez l'URL du contenu :</label>
+            <input type="text" id="url" name="url" required>
+            <button type="submit">Obtenir les options</button>
+        </form>
+        <div id="options-container" style="display: none;">
+            <h2>Options disponibles :</h2>
+            <ul id="options-list" class="options-list"></ul>
+            <form id="choice-form" style="display: none;">
+                <label for="choix">Choisissez le numéro de l'option souhaitée :</label>
+                <input type="number" id="choix" name="choix" required>
+                <button type="submit">Télécharger</button>
+            </form>
+        </div>
+        <div id="message"></div>
+    </div>
+
+    <!-- Modal -->
+    <div id="download-modal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <p id="modal-message"></p>
+            <div class="progress-container">
+                <div class="progress-bar" id="progress-bar"></div>
+            </div>
+            <a id="download-link" href="#" class="button" style="display: none;">Télécharger</a>
+        </div>
+    </div>
+
+    <!-- Toasts -->
+    <div id="toast-container"></div>
+
+    <script>
+        document.getElementById('download-form').addEventListener('submit', function (event) {
+            event.preventDefault();
+            const platform = document.getElementById('platform').value;
+            const url = document.getElementById('url').value;
+            showToast("Chargement des options...", "info");
+            fetch('/telecharger', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ platform: platform, url: url })
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.error) {
+                        showToast(data.error, "error");
+                    } else {
+                        const optionsList = document.getElementById('options-list');
+                        optionsList.innerHTML = '';
+                        data.options.forEach(option => {
+                            const li = document.createElement('li');
+                            li.innerHTML = option.info;
+                            li.classList.add('option-item');
+                            optionsList.appendChild(li);
+                        });
+                        document.getElementById('options-container').style.display = 'block';
+                        document.getElementById('choice-form').style.display = 'block';
+                        showToast("Options chargées avec succès", "success");
+                    }
+                })
+                .catch(error => {
+                    showToast("Une erreur s'est produite lors de la récupération des options.", "error");
+                });
+        });
+
+        document.getElementById('choice-form').addEventListener('submit', function (event) {
+            event.preventDefault();
+            const platform = document.getElementById('platform').value;
+            const url = document.getElementById('url').value;
+            const choix = document.getElementById('choix').value;
+            showToast("Téléchargement en cours...", "info");
+            showModal();
+            const progressBar = document.getElementById('progress-bar');
+            progressBar.style.width = '0%';
+            const interval = setInterval(() => {
+                if (progressBar.style.width === '100%') {
+                    clearInterval(interval);
+                } else {
+                    progressBar.style.width = (parseInt(progressBar.style.width) + 10) + '%';
+                }
+            }, 1000);
+            fetch('/telecharger/choix', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ platform: platform, url: url, choix: parseInt(choix) })
+            })
+                .then(response => response.json())
+                .then(data => {
+                    clearInterval(interval);
+                    progressBar.style.width = '100%';
+                    if (data.download_url) {
+                        document.getElementById('modal-message').innerText = "Téléchargement prêt.";
+                        const downloadLink = document.getElementById('download-link');
+                        downloadLink.href = data.download_url;
+                        downloadLink.style.display = 'block';
+                        showToast("Téléchargement prêt", "success");
+                    } else {
+                        showToast(data.message || data.error, "error");
+                    }
+                })
+                .catch(error => {
+                    clearInterval(interval);
+                    showToast("Une erreur s'est produite lors du téléchargement.", "error");
+                });
+        });
+
+        function showModal() {
+            const modal = document.getElementById('download-modal');
+            const span = document.getElementsByClassName('close')[0];
+            modal.style.display = 'block';
+            span.onclick = function () {
+                modal.style.display = 'none';
+            }
+            window.onclick = function (event) {
+                if (event.target == modal) {
+                    modal.style.display = 'none';
+                }
+            }
+        }
+
+        function showToast(message, type) {
+            const toastContainer = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            toast.innerText = message;
+            toastContainer.appendChild(toast);
+            setTimeout(() => {
+                toast.remove();
+            }, 3000);
+        }
+    </script>
+</body>
+
+</html>
