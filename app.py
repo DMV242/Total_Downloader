@@ -82,7 +82,9 @@ def telecharger_choix():
                 # Récupérer le chemin du fichier téléchargé
                 downloaded_file = ydl.prepare_filename(info)
                 return jsonify(
-                    {"download_url": f"/download/{os.path.basename(downloaded_file)}"}
+                    {
+                        "download_url": f"/youtubedl/download/{os.path.basename(downloaded_file)}"
+                    }
                 )
             else:
                 return jsonify({"error": "Choix invalide."}), 400
