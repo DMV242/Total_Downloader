@@ -24,17 +24,17 @@ def afficher_options(formats):
     return options
 
 
-@app.route("/")
+@app.route("/youtubedl")
 def landing():
     return render_template("landing.html")
 
 
-@app.route("/app")
+@app.route("/youtubedl/app")
 def index():
     return render_template("index.html")
 
 
-@app.route("/telecharger", methods=["POST"])
+@app.route("/youtubedl/telecharger", methods=["POST"])
 def telecharger_contenu():
     data = request.json
     platform = data.get("platform")
@@ -58,7 +58,7 @@ def telecharger_contenu():
         return jsonify({"error": str(e)}), 500
 
 
-@app.route("/telecharger/choix", methods=["POST"])
+@app.route("/youtubedl/telecharger/choix", methods=["POST"])
 def telecharger_choix():
     data = request.json
     platform = data.get("platform")
@@ -93,7 +93,7 @@ def telecharger_choix():
         return jsonify({"error": str(e)}), 500
 
 
-@app.route("/download/<filename>")
+@app.route("/youtubedl/download/<filename>")
 def download_file(filename):
     return send_file(os.path.join(tempfile.gettempdir(), filename), as_attachment=True)
 
