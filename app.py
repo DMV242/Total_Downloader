@@ -5,6 +5,9 @@ import tempfile
 
 app = Flask(__name__)
 
+# Spécifiez ici le chemin vers votre fichier de cookies sur le serveur
+COOKIES_FILE = "/chemin/vers/votre/fichier/cookies.txt"
+
 
 def afficher_options(formats):
     options = []
@@ -38,6 +41,7 @@ def telecharger_contenu():
     try:
         ydl_opts = {
             "outtmpl": os.path.join(tempfile.gettempdir(), "%(title)s.%(ext)s"),
+            "cookiefile": COOKIES_FILE,  # Utilisation du fichier de cookies spécifié
         }
 
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
@@ -62,6 +66,7 @@ def telecharger_choix():
     try:
         ydl_opts = {
             "outtmpl": os.path.join(tempfile.gettempdir(), "%(title)s.%(ext)s"),
+            "cookiefile": COOKIES_FILE,  # Utilisation du fichier de cookies spécifié
         }
 
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
