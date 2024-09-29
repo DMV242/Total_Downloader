@@ -16,7 +16,7 @@ def afficher_options(formats):
         if "width" in format and "height" in format:
             format_info += f" ({format['width']}x{format['height']})"
             format_info += ' <span class="badge badge-video">Vidéo</span>'
-        elif format.get("acodec") and format["acodec"] != "none":
+        else:
             format_info += ' <span class="badge badge-audio">Audio</span>'
         options.append({"id": i, "info": format_info})
     return options
